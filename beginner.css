@@ -1,3 +1,9 @@
+body{
+  background-color: lightgrey;
+}
+
+
+
 .lds-ellipsis {
   display: inline-block;
   position: relative;
