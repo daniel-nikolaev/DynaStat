@@ -1,15 +1,9 @@
-import { Pinwheel } from '@uiball/loaders'
+import { Waveform } from '@uiball/loaders'
 
-export default function App() {
+export default function PageSection({ isLoading }) {
   return (
-    <Pinwheel 
-     size={35}
-     lineWeight={3.5}
-     speed={1} 
-     color="black" 
-    />
-  );
+    <div aria-live="polite" aria-busy={isLoading}>
+      {isLoading && <Waveform />}
+    </div>
+  )
 }
-
-
-
