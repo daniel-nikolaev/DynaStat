@@ -1,7 +1,7 @@
 import { Pinwheel } from '@uiball/loaders'
 
 <Pinwheel 
- size={100}
+ size={150}
  lineWeight={3.5}
  speed={1} 
  color="black" 
