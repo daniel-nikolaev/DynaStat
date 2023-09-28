@@ -11,7 +11,7 @@ import { PatientDataUpdateForm } from './ui-components';
 export default function PageSection({ isLoading }) {
   return (
     <div aria-live="polite" aria-busy={isLoading}>
-      {isLoading && <Pinwheel />}
+      {isLoading && <PatientDataUpdateForm />}
     </div>
   )
 }
@@ -20,7 +20,7 @@ import { UserInformationCreateForm } from './ui-components';
 export default function PageSection({ isLoading }) {
   return (
     <div aria-live="polite" aria-busy={isLoading}>
-      {isLoading && <Pinwheel />}
+      {isLoading && <UserInformationCreateForm />}
     </div>
   )
 }
@@ -29,7 +29,7 @@ import { UserInformationUpdateForm } from './ui-components';
 export default function PageSection({ isLoading }) {
   return (
     <div aria-live="polite" aria-busy={isLoading}>
-      {isLoading && <Pinwheel />}
+      {isLoading && <UserInformationUpdateForm />}
     </div>
   )
 }
