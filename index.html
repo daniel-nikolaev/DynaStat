@@ -11,12 +11,27 @@
         <li><a href="usercreate.html">UserCreate</a></li>
         </ul>
     </nav>
-    
+  
     <h1> DynaStat </h1>
     <h3> Dynamic Statistics for Healthcare Professionals</h3> 
 
   </header>
+
   
+  <body>
+    <script>
+      document.onreadystatechange = function() {
+        if (document.readyState !== "complete") {
+            document.querySelector("body").style.visibility = "hidden";
+            document.querySelector(".pinwheel").style.visibility = "visible";
+        } else {
+            document.querySelector(".pinwheel").style.display = "none";
+            document.querySelector("body").style.visibility = "visible";
+        }
+      };
+    </script>
+
+    
   </body>
 
   
