@@ -1,3 +1,6 @@
 .divider {
     border-style: double;
   }
+img {
+  border-radius: 8px;
+}
