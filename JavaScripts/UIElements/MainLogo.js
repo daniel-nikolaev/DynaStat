@@ -4,7 +4,7 @@ export const DefaultImageExample = () => {
   return (
     <Image
       alt="DynaStat Logo"
-      src="/Pictures/Pictures/Screenshot 2023-09-26 111214.png"
+      src="/Pictures/Pictures/Dynastat.png"
       objectFit="initial"
       objectPosition="50% 50%"
       backgroundColor="initial"
