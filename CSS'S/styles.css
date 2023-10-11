@@ -1,6 +1,9 @@
 .divider {
     border-style: solid;
-  }
+}
+.MenuIcon {
+    border-style: dashed;
+}
 img {
   border-radius: 8px;
 }
