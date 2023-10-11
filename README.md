@@ -1,2 +1,2 @@
-## DynaStat
-# CodeBase for my DynaStat Community Service Project
+# DynaStat
+CodeBase for my DynaStat Community Service Project
