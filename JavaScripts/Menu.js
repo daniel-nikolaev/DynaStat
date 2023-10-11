@@ -9,7 +9,7 @@ export const MenuIcon = () => (
       },
     }}
   >
-    <Menu>
+    <Menu size="small">
       <MenuItem><Link href="google.com">Google</Link></MenuItem>
       <MenuItem>Create a Copy</MenuItem>
       <MenuItem>Mark Draft</MenuItem>
