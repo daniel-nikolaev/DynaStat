@@ -1,3 +1,2 @@
-# DynaStat
-
-aws code for dynastat
+## DynaStat
+# CodeBase for my DynaStat Community Service Project
