@@ -1,16 +1,23 @@
-.center{
+.center {
   text-align: center;
+  display: block;
   margin-left: auto;
   margin-right: auto;
+  width: 75%;
+}
+.nav-icons {
+  text-decoration: none;
 }
 
-
-
+.divider-solid {
+  border-style: solid;
+}
+.divider-dashed {
+  border-style: dashed;
+}
 
 /*idk whats below this, need to figure out*/
-.divider {
-    border-style: solid;
-}
+
 .MenuIcon {
     border-style: dashed;
 }
