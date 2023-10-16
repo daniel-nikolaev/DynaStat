@@ -1,6 +1,15 @@
 /*  @import "css/";   */
+/**/
 
+/*Import CSS Scripts from internal code*/
 @import "css/contactus.css";
 @import "css/styles.css";
 @import "css/topnav.css";
 @import "css/pinwheel.css";
+
+/*Importing Items from outside of repository*/
+
+/*Icons for Nav Bar*/
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+/*Favicon for Wesbite*/
+<link rel="icon" type="image/x-icon" href="/images/favicon.png">
