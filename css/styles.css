@@ -5,6 +5,11 @@
   margin-right: auto;
   width: 75%;
 }
+.horizcenter {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
 .nav-icons {
   text-decoration: none;
 }
