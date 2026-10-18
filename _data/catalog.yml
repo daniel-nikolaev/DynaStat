@@ -1,0 +1,68 @@
+# Single list of every free resource and product.
+# The footer, site search and each detail page's header all read from here,
+# so adding or renaming something only needs to happen in this file
+# (plus its own page under resources/ or products/).
+#
+#   id        must match `item:` in the page's front matter
+#   short     shorter name used in the footer and breadcrumb
+#   planned   true shows the orange "future" status pill
+#   keywords  extra words the site search should match
+
+resources:
+  - id: osint-tools
+    title: Free OSINT Tools Directory
+    short: OSINT Tools Directory
+    tag: Research
+    status: In development
+    url: /resources/osint-tools/
+    summary: A curated list of useful, free open-source intelligence tools, organized so you can find the right one quickly.
+    keywords: osint open source intelligence research investigation tools free directory
+
+  - id: med-school-requirements
+    title: Med School Requirements Guide
+    short: Med School Requirements
+    tag: Pre-Med
+    status: In development
+    url: /resources/med-school-requirements/
+    summary: Clear information on what medical schools expect, including prerequisite courses, exams and application steps, all in one place.
+    keywords: medical school med school premed pre-med requirements prerequisites mcat application
+
+  - id: premed-notes
+    title: Pre-Med Notes Exchange
+    short: Pre-Med Notes Exchange
+    tag: Community
+    status: Coming in the future
+    planned: true
+    url: /resources/premed-notes/
+    summary: A future space where students can share notes and helpful advice for pre-med classes, by students and for students.
+    keywords: notes advice premed pre-med classes students community share study
+
+products:
+  - id: ezrestock
+    title: ezRestock
+    short: ezRestock
+    tag: "Retail & Inventory"
+    status: In development
+    url: /products/ezrestock/
+    summary: Restocking made simple. Pick or search for the products your store is running low on, and ezRestock tells you exactly which supplier to order each one from.
+    keywords: inventory restock store supplier retail ordering shop
+
+  - id: cell-line-manager
+    title: Cell Line Lab Manager
+    short: Cell Line Lab Manager
+    subtitle: Working title
+    tag: Laboratory
+    status: In development
+    url: /products/cell-line-manager/
+    summary: Laboratory management software for cell lines. Labs choose how they store their cell lines and record exactly where each one sits on a specific holder, so nothing gets lost.
+    keywords: lab laboratory cell lines cell culture storage freezer cryo box holder rack tracking
+
+  - id: allergy-lookup
+    title: Medication Allergy Lookup
+    short: Medication Allergy Lookup
+    subtitle: Working title · Online tool
+    tag: "Health & Safety"
+    status: In development
+    url: /products/allergy-lookup/
+    summary: Search for a specific medication and see which allergies could cause a reaction to it, using ingredient information that is usually hard to find.
+    keywords: medication medicine drug allergy allergies reaction ingredients peanut progesterone

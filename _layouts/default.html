@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% if page.item %}{% assign item = site.data.catalog[page.section] | where: "id", page.item | first %}{% endif %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if item %}{{ item.title }} | DynaStat{% else %}DynaStat | {{ site.tagline }}{% endif %}</title>
+  <meta name="description" content="{% if item %}{{ item.summary | escape }}{% else %}{{ site.description | escape }}{% endif %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ '/css/styles.css' | relative_url }}">
+</head>
+<body>
+
+  {% include header.html %}
+
+  <main>
+    {{ content }}
+  </main>
+
+  {% include footer.html %}
+
+  {% include search-index.html %}
+  <script src="{{ '/js/main.js' | relative_url }}"></script>
+</body>
+</html>

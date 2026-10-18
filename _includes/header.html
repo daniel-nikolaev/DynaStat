@@ -1,0 +1,61 @@
+<!-- Utility bar (disabled for now — remove the comment wrapper to re-enable)
+<div class="utility">
+  <div class="container">
+    <a href="#">Investors</a>
+    <a href="#">Media Center</a>
+    <a href="#careers">Careers</a>
+    <a href="#">Contact Us</a>
+    <a href="#">Global | English</a>
+  </div>
+</div>
+-->
+
+<header class="site">
+  <div class="container">
+    <a href="{{ '/' | relative_url }}" class="logo" aria-label="DynaStat home">
+      <div class="logo-mark">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 17 9 11 13 15 21 7"></polyline>
+          <polyline points="15 7 21 7 21 13"></polyline>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <strong>DynaStat</strong>
+        <span>Dynamic Statistics</span>
+      </div>
+    </a>
+
+    <div class="header-right">
+      <nav class="main" aria-label="Main">
+        <ul>
+          <li><a href="{{ '/#resources' | relative_url }}"{% if page.section == 'resources' %} class="active"{% endif %}>Free Resources</a></li>
+          <li><a href="{{ '/#products' | relative_url }}"{% if page.section == 'products' %} class="active"{% endif %}>Products</a></li>
+          <li><a href="{{ '/#about' | relative_url }}">About DynaStat</a></li>
+          <li><a href="{{ '/#contact' | relative_url }}">Get Involved</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <form class="search" id="search" role="search" autocomplete="off">
+          <input type="search" id="searchInput" placeholder="Search DynaStat" aria-label="Search the site" tabindex="-1">
+          <button type="submit" class="icon-btn" id="searchBtn" aria-label="Open search" aria-expanded="false">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </button>
+          <ul class="search-results" id="searchResults" role="listbox"></ul>
+        </form>
+        <button class="icon-btn menu-toggle" aria-label="Open menu" aria-expanded="false" id="menuToggle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="drawer" id="drawer">
+  <ul>
+    <li><a href="{{ '/#resources' | relative_url }}">Free Resources</a></li>
+    <li><a href="{{ '/#products' | relative_url }}">Products</a></li>
+    <li><a href="{{ '/#about' | relative_url }}">About DynaStat</a></li>
+    <li><a href="{{ '/#contact' | relative_url }}">Get Involved</a></li>
+  </ul>
+</div>
