@@ -1,0 +1,22 @@
+# AWS Amplify build settings.
+# GitHub Pages builds this Jekyll site automatically; Amplify has to be told to.
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - ruby -v
+        - gem install bundler --no-document
+        - bundle config set --local path vendor/bundle
+        - bundle install
+    build:
+      commands:
+        # baseurl is "/DynaStat" for GitHub Pages; Amplify serves from the domain root
+        - RUBYOPT="-r./_amplify/liquid_shim.rb" JEKYLL_ENV=production bundle exec jekyll build --baseurl ""
+  artifacts:
+    baseDirectory: _site
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - vendor/bundle/**/*
