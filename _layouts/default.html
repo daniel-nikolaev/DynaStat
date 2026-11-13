@@ -4,7 +4,7 @@
   {% if page.item %}{% assign item = site.data.catalog[page.section] | where: "id", page.item | first %}{% endif %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% if item %}{{ item.title }} | DynaStat{% else %}DynaStat | {{ site.tagline }}{% endif %}</title>
+  <title>{% if item %}{{ item.title }} | DynaStat{% else %}DynaStat{% endif %}</title>
   <meta name="description" content="{% if item %}{{ item.summary | escape }}{% else %}{{ site.description | escape }}{% endif %}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

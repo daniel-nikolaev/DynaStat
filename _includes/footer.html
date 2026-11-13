@@ -19,6 +19,14 @@
         </ul>
       </div>
       <div>
+        <h4>Pokemon</h4>
+        <ul>
+          {% for item in site.data.catalog.pokemon %}
+          <li><a href="{{ item.url | relative_url }}">{{ item.short }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div>
         <h4>Free Resources</h4>
         <ul>
           {% for item in site.data.catalog.resources %}
@@ -30,8 +38,6 @@
         <h4>Company</h4>
         <ul>
           <li><a href="{{ '/#about' | relative_url }}">About DynaStat</a></li>
-          <li><a href="{{ '/#contact' | relative_url }}">Get Involved</a></li>
-          <li><a href="{{ '/#contact' | relative_url }}">Contact Us</a></li>
         </ul>
       </div>
     </div>

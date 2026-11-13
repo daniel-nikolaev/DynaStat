@@ -10,7 +10,7 @@
 
 resources:
   - id: osint-tools
-    title: Free OSINT Tools Directory
+    title: OSINT Tools Directory
     short: OSINT Tools Directory
     tag: Research
     status: In development
@@ -26,16 +26,6 @@ resources:
     url: /resources/med-school-requirements/
     summary: Clear information on what medical schools expect, including prerequisite courses, exams and application steps, all in one place.
     keywords: medical school med school premed pre-med requirements prerequisites mcat application
-
-  - id: premed-notes
-    title: Pre-Med Notes Exchange
-    short: Pre-Med Notes Exchange
-    tag: Community
-    status: Coming in the future
-    planned: true
-    url: /resources/premed-notes/
-    summary: A future space where students can share notes and helpful advice for pre-med classes, by students and for students.
-    keywords: notes advice premed pre-med classes students community share study
 
 products:
   - id: ezrestock
@@ -66,3 +56,22 @@ products:
     url: /products/allergy-lookup/
     summary: Search for a specific medication and see which allergies could cause a reaction to it, using ingredient information that is usually hard to find.
     keywords: medication medicine drug allergy allergies reaction ingredients peanut progesterone
+
+pokemon:
+  - id: bulk-binder-sort
+    title: Bulk/Binder Sort
+    short: Bulk/Binder Sort
+    tag: Pokemon
+    status: In development
+    url: /pokemon/bulk-binder-sort/
+    summary: A tool that helps you sort your Pokemon cards, whether you are sorting for a personal binder or organizing your bulk.
+    keywords: pokemon tcg cards bulk binder sort sorting collection organize
+
+  - id: code-cards
+    title: Code Cards
+    short: Code Cards
+    tag: Pokemon
+    status: In development
+    url: /pokemon/code-cards/
+    summary: A tool for keeping track of Pokemon TCG code cards.
+    keywords: pokemon tcg code cards codes redeem online live

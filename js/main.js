@@ -10,6 +10,31 @@ drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
   toggle.setAttribute('aria-expanded', 'false');
 }));
 
+// Header dropdown menus: hover opens them on desktop; click/keyboard toggles them too
+const menus = document.querySelectorAll('nav.main .has-menu');
+const closeMenus = except => menus.forEach(m => {
+  if (m === except) return;
+  m.classList.remove('open');
+  m.querySelector('.menu-btn').setAttribute('aria-expanded', 'false');
+});
+menus.forEach(menu => {
+  const btn = menu.querySelector('.menu-btn');
+  btn.addEventListener('click', () => {
+    const open = menu.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open);
+    closeMenus(menu);
+  });
+  menu.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeMenus(); btn.focus(); }
+  });
+  menu.addEventListener('focusout', e => {
+    if (!menu.contains(e.relatedTarget)) { menu.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
+  });
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('nav.main .has-menu')) closeMenus();
+});
+
 // Site search: the index comes from _data/catalog.yml (see _includes/search-index.html)
 const search = document.getElementById('search');
 const searchInput = document.getElementById('searchInput');
