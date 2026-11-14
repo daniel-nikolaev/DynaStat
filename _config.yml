@@ -1,0 +1,15 @@
+title: DynaStat
+full_name: Dynamic Statistics
+tagline: Building a better tomorrow, today.
+description: DynaStat (Dynamic Statistics) builds products and resources for everyone. Building a better tomorrow, today.
+
+# The site is served from https://daniel-nikolaev.github.io/DynaStat/
+# If it moves to a custom domain (e.g. dynastat.com), change this to ""
+baseurl: "/DynaStat"
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - vendor
+  - amplify.yml

@@ -1,0 +1,68 @@
+<!-- Utility bar (disabled for now — remove the comment wrapper to re-enable)
+<div class="utility">
+  <div class="container">
+    <a href="#">Investors</a>
+    <a href="#">Media Center</a>
+    <a href="#careers">Careers</a>
+    <a href="#">Contact Us</a>
+    <a href="#">Global | English</a>
+  </div>
+</div>
+-->
+
+{% assign navigation = site.data.navigation %}
+<header class="site">
+  <div class="container">
+    <a href="{{ '/' | relative_url }}" class="logo" aria-label="DynaStat home">
+      <div class="logo-text">
+        <strong>DynaStat</strong>
+        <span>Dynamic Statistics</span>
+      </div>
+    </a>
+
+    <div class="header-right">
+      <nav class="main" aria-label="Main">
+        <ul>
+          {% for group in navigation %}
+          {% assign group_urls = group.links | map: "url" %}
+          <li class="has-menu">
+            <button type="button" class="menu-btn{% if group_urls contains page.url %} active{% endif %}" aria-expanded="false">
+              {{ group.name }}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <ul class="submenu">
+              {% for link in group.links %}
+              <li><a href="{{ link.url | relative_url }}"{% if page.url == link.url %} aria-current="page"{% endif %}>{{ link.title }}</a></li>
+              {% endfor %}
+            </ul>
+          </li>
+          {% endfor %}
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <form class="search" id="search" role="search" autocomplete="off">
+          <input type="search" id="searchInput" placeholder="Search DynaStat" aria-label="Search the site" tabindex="-1">
+          <button type="submit" class="icon-btn" id="searchBtn" aria-label="Open search" aria-expanded="false">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </button>
+          <ul class="search-results" id="searchResults" role="listbox"></ul>
+        </form>
+        <button class="icon-btn menu-toggle" aria-label="Open menu" aria-expanded="false" id="menuToggle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="drawer" id="drawer">
+  {% for group in navigation %}
+  <h4>{{ group.name }}</h4>
+  <ul>
+    {% for link in group.links %}
+    <li><a href="{{ link.url | relative_url }}">{{ link.title }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endfor %}
+</div>

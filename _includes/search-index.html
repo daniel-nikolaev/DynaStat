@@ -1,0 +1,19 @@
+<script>
+  // Built from _data/catalog.yml so the search covers every page on the site
+  window.SEARCH_INDEX = [
+    {% for item in site.data.catalog.products %}
+    { type: "Product", title: {{ item.title | jsonify }}, url: {{ item.url | relative_url | jsonify }},
+      text: {{ item.title | append: " " | append: item.summary | append: " " | append: item.keywords | downcase | jsonify }} },
+    {% endfor %}
+    {% for item in site.data.catalog.pokemon %}
+    { type: "Pokemon", title: {{ item.title | jsonify }}, url: {{ item.url | relative_url | jsonify }},
+      text: {{ item.title | append: " " | append: item.summary | append: " " | append: item.keywords | downcase | jsonify }} },
+    {% endfor %}
+    {% for item in site.data.catalog.resources %}
+    { type: "Free Resource", title: {{ item.title | jsonify }}, url: {{ item.url | relative_url | jsonify }},
+      text: {{ item.title | append: " " | append: item.summary | append: " " | append: item.keywords | downcase | jsonify }} },
+    {% endfor %}
+    { type: "Company", title: "About DynaStat", url: {{ '/#about' | relative_url | jsonify }},
+      text: "about dynastat dynamic statistics mission company who we are" }
+  ];
+</script>

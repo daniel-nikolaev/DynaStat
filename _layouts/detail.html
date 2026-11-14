@@ -1,0 +1,36 @@
+---
+layout: default
+---
+{% comment %}
+  Shared layout for every resource and product page.
+  The page header (title, tag, summary, status) comes from _data/catalog.yml;
+  the page's own file only holds the body content below it.
+{% endcomment %}
+{% assign item = site.data.catalog[page.section] | where: "id", page.item | first %}
+{% if page.section == "resources" %}{% assign section_name = "Free Resources" %}{% elsif page.section == "pokemon" %}{% assign section_name = "Pokemon" %}{% else %}{% assign section_name = "Products" %}{% endif %}
+{% if page.section == "pokemon" %}{% assign section_url = '/' | relative_url %}{% else %}{% assign section_url = '/#' | append: page.section | relative_url %}{% endif %}
+
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ '/' | relative_url }}">Home</a>
+      <span aria-hidden="true">/</span>
+      <a href="{{ section_url }}">{{ section_name }}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{{ item.short }}</span>
+    </nav>
+    <span class="eyebrow">{{ item.tag | escape }}</span>
+    <h1>{{ item.title }}</h1>
+    {% if item.subtitle %}<p class="subtitle">{{ item.subtitle }}</p>{% endif %}
+    <p class="lead">{{ item.summary }}</p>
+    <span class="pill{% if item.planned %} planned{% endif %}">{{ item.status }}</span>
+  </div>
+</section>
+
+<section class="page-body">
+  <div class="container prose">
+    {{ content }}
+
+    <a class="link-arrow back-link" href="{{ section_url }}"><span>←</span> Back to {{ section_name }}</a>
+  </div>
+</section>

@@ -1,0 +1,23 @@
+# Main navigation menus (header dropdowns + mobile drawer).
+- name: Apps
+  links:
+    - title: ezRestock
+      url: /products/ezrestock/
+    - title: Cell Lab Manager
+      url: /products/cell-line-manager/
+    - title: Medication Lookup
+      url: /products/allergy-lookup/
+
+- name: Pokemon
+  links:
+    - title: Bulk/Binder Sort
+      url: /pokemon/bulk-binder-sort/
+    - title: Code Cards
+      url: /pokemon/code-cards/
+
+- name: Resources
+  links:
+    - title: Med School Requirements Guide
+      url: /resources/med-school-requirements/
+    - title: OSINT Tools Directory
+      url: /resources/osint-tools/

@@ -1,0 +1,53 @@
+<footer class="site">
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <a href="{{ '/' | relative_url }}" class="logo">
+          <div class="logo-mark">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"></polyline><polyline points="15 7 21 7 21 13"></polyline></svg>
+          </div>
+          <div class="logo-text"><strong>DynaStat</strong><span>Dynamic Statistics</span></div>
+        </a>
+        <p class="footer-tagline">{{ site.tagline }}</p>
+      </div>
+      <div>
+        <h4>Products</h4>
+        <ul>
+          {% for item in site.data.catalog.products %}
+          <li><a href="{{ item.url | relative_url }}">{{ item.short }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div>
+        <h4>Pokemon</h4>
+        <ul>
+          {% for item in site.data.catalog.pokemon %}
+          <li><a href="{{ item.url | relative_url }}">{{ item.short }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div>
+        <h4>Free Resources</h4>
+        <ul>
+          {% for item in site.data.catalog.resources %}
+          <li><a href="{{ item.url | relative_url }}">{{ item.short }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="{{ '/#about' | relative_url }}">About DynaStat</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">{{ site.time | date: '%Y' }}</span> Dynamic Statistics (DynaStat). All rights reserved.</span>
+      <ul>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Use</a></li>
+        <li><a href="#">Accessibility</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,22 @@
+# AWS Amplify build settings.
+# GitHub Pages builds this Jekyll site automatically; Amplify has to be told to.
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - ruby -v
+        - bundle config set --local path vendor/bundle
+        - bundle install
+    build:
+      commands:
+        # Build servers default to an ASCII locale, which breaks Sass on the theme's UTF-8 files; force UTF-8.
+        # baseurl is "/DynaStat" for GitHub Pages; Amplify serves from the domain root
+        - LANG=C.UTF-8 LC_ALL=C.UTF-8 RUBYOPT="-Eutf-8 -r./_amplify/liquid_shim.rb" JEKYLL_ENV=production bundle exec jekyll build --baseurl ""
+  artifacts:
+    baseDirectory: _site
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - vendor/bundle/**/*
