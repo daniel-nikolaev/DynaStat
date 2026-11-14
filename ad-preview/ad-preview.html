@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pokemon Binder Sorter: ad placement preview</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="ad-preview.css">
+  <script>
+    // Apply the saved theme before the page draws, so dark mode doesn't flash white.
+    try {
+      document.documentElement.dataset.theme =
+        (JSON.parse(localStorage.getItem('ps:v1:settings')) || {}).theme || 'auto';
+    } catch (e) { document.documentElement.dataset.theme = 'auto'; }
+  </script>
+</head>
+<body>
+  <p class="preview-note">
+    Ad placement preview. Dashed boxes show where ads could go; the app works as usual.
+    <label><input type="checkbox" id="toggle-ads" checked> Show ad slots</label>
+  </p>
+  <header class="topbar">
+    <button id="menu-btn" class="icon-btn" type="button" aria-label="Hide menu" aria-expanded="true" aria-controls="controls" title="Hide menu">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </button>
+    <h1>Pokemon Binder Sorter</h1>
+    <button id="settings-btn" class="settings-btn" type="button" aria-label="Settings" aria-expanded="false" aria-controls="settings-panel">
+      <span id="settings-summary" class="settings-summary"></span>
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94a7.4 7.4 0 0 0 .05-.94 7.4 7.4 0 0 0-.05-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.58.24-1.12.55-1.62.94l-2.39-.96a.5.5 0 0 0-.6.22L2.72 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.4 7.4 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.39 1.04.7 1.62.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.58-.24 1.12-.55 1.62-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7Z"/></svg>
+    </button>
+    <button id="fullscreen-btn" class="icon-btn" type="button" aria-label="Enter full screen" title="Full screen">
+      <svg class="fs-enter" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M4 4h6v2H6v4H4zm10 0h6v6h-2V6h-4zM4 14h2v4h4v2H4zm14 0h2v6h-6v-2h4z"/></svg>
+      <svg class="fs-exit" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M8 4h2v6H4V8h4zm6 0h2v4h4v2h-6zM4 14h6v6H8v-4H4zm10 0h6v2h-4v4h-2z"/></svg>
+    </button>
+  </header>
+
+  <div class="ad-wrap">
+    <div class="ad ad-leaderboard"><b>A · Top leaderboard</b><span>728×90 desktop · 320×50 mobile</span><small class="full">Highest visibility; seen on every visit</small></div>
+  </div>
+
+  <div id="settings-panel" class="settings-panel" role="dialog" aria-label="Settings" hidden>
+    <div class="settings-head">
+      <h2>Settings</h2>
+      <button id="settings-close" type="button" aria-label="Close settings">✕</button>
+    </div>
+    <section class="control-group">
+      <h2>Sorter size</h2>
+      <select id="grid-preset" aria-label="Sorter size preset">
+        <option value="2x2">2 × 2 (4 slots)</option>
+        <option value="2x3">2 × 3 (6 slots)</option>
+        <option value="3x3">3 × 3 (9 slots)</option>
+        <option value="3x4">3 × 4 (12 slots)</option>
+        <option value="4x4">4 × 4 (16 slots)</option>
+        <option value="4x5">4 × 5 (20 slots)</option>
+        <option value="custom">Custom…</option>
+      </select>
+      <div class="custom-grid">
+        <label>Rows <input id="grid-rows" type="number" min="1" max="12" value="3"></label>
+        <span>×</span>
+        <label>Columns <input id="grid-cols" type="number" min="1" max="12" value="3"></label>
+      </div>
+      <p class="hint">Sizes are rows × columns.</p>
+      <label class="field">Start from corner
+        <select id="start-corner">
+          <option value="tl">↖ Top-left</option>
+          <option value="tr">↗ Top-right</option>
+          <option value="bl">↙ Bottom-left</option>
+          <option value="br">↘ Bottom-right</option>
+        </select>
+      </label>
+      <p class="hint">Cards fill row by row from this corner.</p>
+      <label class="check">
+        <input id="show-positions" type="checkbox" checked>
+        <span>Show slot positions (R1 C1)</span>
+      </label>
+    </section>
+
+    <section class="control-group">
+      <h2>Filters</h2>
+      <label class="check">
+        <input id="include-secret" type="checkbox" checked>
+        <span id="secret-label">Include secret rares</span>
+      </label>
+    </section>
+
+    <section class="control-group">
+      <h2>Appearance</h2>
+      <div class="segmented" role="radiogroup" aria-label="Theme">
+        <label><input type="radio" name="theme" value="auto" checked>Auto</label>
+        <label><input type="radio" name="theme" value="light">Light</label>
+        <label><input type="radio" name="theme" value="dark">Dark</label>
+      </div>
+      <p class="hint">Auto follows your device's light or dark setting.</p>
+    </section>
+
+    <section class="control-group">
+      <h2>Reset</h2>
+      <button id="reset-defaults" class="reset-btn" type="button">Reset to defaults</button>
+      <p class="hint">Clears your saved settings and downloaded card data, then reloads the page as if it's your first visit.</p>
+    </section>
+  </div>
+
+  <div class="layout">
+    <aside id="controls" class="controls" aria-label="Sorting options">
+      <section class="control-group">
+        <h2>1. Set</h2>
+        <label class="field field-tight">Series
+          <select id="series-select" aria-label="Choose a series"></select>
+        </label>
+        <div class="field field-tight">Set</div>
+        <div class="set-dropdown">
+          <button id="set-trigger" class="set-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="set-menu">
+            <span id="set-trigger-name" class="set-name">Choose a set…</span>
+            <span id="set-trigger-code" class="set-code"></span>
+            <span class="caret" aria-hidden="true">▾</span>
+          </button>
+          <div id="set-menu" class="set-menu" hidden>
+            <input id="set-search" type="search" placeholder="Search sets or codes…" autocomplete="off" aria-label="Search sets">
+            <div id="set-select" class="set-list" role="listbox" tabindex="0" aria-label="Choose a set"></div>
+          </div>
+        </div>
+        <p id="set-meta" class="hint"></p>
+      </section>
+
+      <section class="control-group">
+        <h2>2. Sorting mode</h2>
+        <label class="radio">
+          <input type="radio" name="mode" value="breakdown" checked>
+          <span><strong>Set breakdown</strong><small>One pile per energy type, plus Trainer and Energy piles.</small></span>
+        </label>
+        <label class="radio">
+          <input type="radio" name="mode" value="bytype">
+          <span><strong>Type by type</strong><small>Pick one type and lay its cards out in collector-number order.</small></span>
+        </label>
+      </section>
+
+      <section id="filters-section" class="control-group" hidden>
+        <h2>3. Filters</h2>
+        <div id="type-filter" class="filter-block" hidden>
+          <h3>Energy type</h3>
+          <div id="type-picker" class="type-picker"></div>
+        </div>
+        <div id="special-section" class="filter-block" hidden>
+          <h3>Special cards</h3>
+          <div id="special-filters"></div>
+          <p class="hint">Clear a box to leave those cards out, e.g. for simple bulk sorting.</p>
+        </div>
+      </section>
+
+      <div class="ad ad-sidebar"><b>B · Sidebar square</b><span>250×250</span><small>Below the controls, out of the way of the sorter</small></div>
+    </aside>
+
+    <main class="stage">
+      <div id="status" class="status" hidden></div>
+      <div class="stage-bar">
+        <button id="back-to-types" class="back-btn" type="button" hidden>← All energy types</button>
+        <div id="summary" class="summary"></div>
+      </div>
+      <div id="board" class="board" aria-live="polite"></div>
+      <nav class="pager" aria-label="Pages">
+        <button id="prev-page" type="button">‹ Prev</button>
+        <span id="page-label">Page 1 of 1</span>
+        <button id="next-page" type="button">Next ›</button>
+      </nav>
+      <div class="ad ad-bottom"><b>D · Bottom banner</b><span>728×90 desktop · 300×250 mobile</span><small>Kept clear of the Prev/Next buttons to avoid accidental clicks</small></div>
+      <p class="credit">Card data and images from <a href="https://tcgdex.dev" target="_blank" rel="noopener">TCGdex</a>. Pokémon and card images © Nintendo / Creatures / GAME FREAK / The Pokémon Company. This is an unofficial fan tool.</p>
+    </main>
+
+    <aside class="rail" aria-label="Advertisement">
+      <div class="ad ad-rail"><b>C · Right rail</b><span>160×600</span><small>Sticky; only on screens 1280px and wider</small></div>
+    </aside>
+  </div>
+
+  <div class="ad ad-anchor"><b>E · Mobile anchor</b><span>320×50 · phones only</span></div>
+
+  <dialog id="modal">
+    <div class="modal-head">
+      <h3 id="modal-title"></h3>
+      <button id="modal-close" type="button" aria-label="Close">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </dialog>
+
+  <script src="../app.js"></script>
+  <script>
+    document.getElementById('toggle-ads').addEventListener('change', e =>
+      document.body.classList.toggle('hide-ads', !e.target.checked));
+  </script>
+</body>
+</html>

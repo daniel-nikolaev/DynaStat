@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pokemon Binder Sorter: font preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="font-preview.css">
+</head>
+<body>
+  <p class="note">Font preview: the same parts of the app in each font. This page is separate from the app.</p>
+
+  <div class="columns">
+    <section class="sample" style="--font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif">
+      <p class="font-name">Current: System font <small>(San Francisco on Mac)</small></p>
+      <div class="sample-body"></div>
+    </section>
+    <section class="sample" style="--font: 'Inter', sans-serif">
+      <p class="font-name">Inter <small>(neutral, crisp, very readable)</small></p>
+      <div class="sample-body"></div>
+    </section>
+    <section class="sample" style="--font: 'Nunito', sans-serif">
+      <p class="font-name">Nunito <small>(rounded, friendly, playful)</small></p>
+      <div class="sample-body"></div>
+    </section>
+  </div>
+
+  <template id="sample-template">
+    <h1>Pokemon Binder Sorter</h1>
+
+    <h2>1. Set</h2>
+    <div class="label">Series</div>
+    <div class="fake-select">Scarlet &amp; Violet (19 sets) <span>▾</span></div>
+    <div class="set-row"><span>Prismatic Evolutions <small>(180)</small></span><code>[PRE]</code></div>
+    <div class="set-row selected"><span>Surging Sparks <small>(252)</small></span><code>[SSP]</code></div>
+
+    <h2>2. Sorting mode</h2>
+    <div class="radio"><span class="dot-radio on"></span><div><strong>Set breakdown</strong><small>One pile per energy type, plus Trainer and Energy piles.</small></div></div>
+
+    <h2>3. Filters</h2>
+    <div class="chips">
+      <span class="chip"><i style="--c:#4f9d45"></i>Grass <small>35</small></span>
+      <span class="chip on"><i style="--c:#e0533b"></i>Fire <small>14</small></span>
+      <span class="chip"><i style="--c:#3a8fdc"></i>Water <small>26</small></span>
+    </div>
+
+    <div class="piles">
+      <div class="pile" style="--c:#4f9d45"><b>Grass</b><span>35 cards</span><em>#001 – #243</em></div>
+      <div class="pile" style="--c:#e0533b"><b>Fire</b><span>14 cards</span><em>#030 – #224</em></div>
+      <div class="pile" style="--c:#9b55c4"><b>Psychic</b><span>33 cards</span><em>#082 – #245</em></div>
+    </div>
+
+    <dl class="details">
+      <dt>Number</dt><dd>243 / 198</dd>
+      <dt>Rarity</dt><dd>Special Illustration Rare (SIR) - <span class="gold">★★</span></dd>
+    </dl>
+
+    <div class="buttons">
+      <button>← All energy types</button>
+      <button class="light">Next ›</button>
+    </div>
+
+    <p class="body-text">Put each card on the pile for its type. 0123456789</p>
+  </template>
+
+  <script>
+    const tpl = document.getElementById('sample-template');
+    document.querySelectorAll('.sample-body').forEach(b => b.append(tpl.content.cloneNode(true)));
+  </script>
+</body>
+</html>
