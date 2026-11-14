@@ -6,7 +6,6 @@ frontend:
     preBuild:
       commands:
         - ruby -v
-        - gem install bundler --no-document
         - bundle config set --local path vendor/bundle
         - bundle install
     build:
