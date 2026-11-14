@@ -10,8 +10,9 @@ frontend:
         - bundle install
     build:
       commands:
+        # Build servers default to an ASCII locale, which breaks Sass on the theme's UTF-8 files; force UTF-8.
         # baseurl is "/DynaStat" for GitHub Pages; Amplify serves from the domain root
-        - RUBYOPT="-r./_amplify/liquid_shim.rb" JEKYLL_ENV=production bundle exec jekyll build --baseurl ""
+        - LANG=C.UTF-8 LC_ALL=C.UTF-8 RUBYOPT="-Eutf-8 -r./_amplify/liquid_shim.rb" JEKYLL_ENV=production bundle exec jekyll build --baseurl ""
   artifacts:
     baseDirectory: _site
     files:
