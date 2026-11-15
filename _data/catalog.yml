@@ -63,7 +63,7 @@ pokemon:
     short: Bulk/Binder Sort
     tag: Pokemon
     status: In development
-    url: /pokemon/bulk-binder-sort/
+    url: https://bbsort.dynamicstatistics.org
     summary: A tool that helps you sort your Pokemon cards, whether you are sorting for a personal binder or organizing your bulk.
     keywords: pokemon tcg cards bulk binder sort sorting collection organize
 

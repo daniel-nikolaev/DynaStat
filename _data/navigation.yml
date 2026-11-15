@@ -11,7 +11,7 @@
 - name: Pokemon
   links:
     - title: Bulk/Binder Sort
-      url: /pokemon/bulk-binder-sort/
+      url: https://bbsort.dynamicstatistics.org
     - title: Code Cards
       url: /pokemon/code-cards/
 
