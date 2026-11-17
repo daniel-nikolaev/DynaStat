@@ -129,15 +129,19 @@ function readStore(key) {
   catch { return undefined; }
 }
 
-function writeStore(key, value) {
+// Returns whether the value was saved. With evict (the default), a full quota
+// drops cached sets and tries once more.
+function writeStore(key, value, { evict = true } = {}) {
+  const json = JSON.stringify(value);
   try {
-    localStorage.setItem(CACHE_PREFIX + key, JSON.stringify(value));
+    localStorage.setItem(CACHE_PREFIX + key, json);
+    return true;
   } catch {
-    // Quota full: drop cached sets and try once more.
+    if (!evict) return false;
     Object.keys(localStorage)
       .filter(k => k.startsWith(CACHE_PREFIX + 'set:'))
       .forEach(k => localStorage.removeItem(k));
-    try { localStorage.setItem(CACHE_PREFIX + key, JSON.stringify(value)); } catch { /* give up */ }
+    try { localStorage.setItem(CACHE_PREFIX + key, json); return true; } catch { return false; }
   }
 }
 
@@ -303,9 +307,34 @@ function enrichCard(card, set) {
 
 /* ---------------------------- Data loading ---------------------------- */
 
-async function loadSetList() {
+// Returns the set list as soon as set names are known (about 20 requests), so the
+// picker is usable right away. Set codes (e.g. PRE) need one request per set, so
+// those are filled in afterwards in the background; onCodes is called as they arrive.
+async function loadSetList(onCodes) {
   const cached = readStore('setlist-v3');
-  if (cached && Date.now() - cached.time < SET_LIST_TTL) return cached.groups;
+  if (cached?.groups) {
+    if (!cached.codesDone) fillSetCodes(cached, onCodes);   // resume an unfinished run
+    else if (Date.now() - cached.time >= SET_LIST_TTL) {
+      // Stale: show it now, refresh quietly for next time.
+      fetchSetGroups(cached.groups)
+        .then(groups => fillSetCodes({ time: Date.now(), groups, codesDone: false }, () => {}))
+        .catch(() => {});
+    }
+    return cached.groups;
+  }
+
+  const entry = { time: Date.now(), groups: await fetchSetGroups([]), codesDone: false };
+  // Drop older cached copies of the set list.
+  ['setlist', 'setlist-oldest-first'].forEach(k => localStorage.removeItem(CACHE_PREFIX + k));
+  writeStore('setlist-v3', entry);
+  fillSetCodes(entry, onCodes);
+  return entry.groups;
+}
+
+async function fetchSetGroups(previousGroups) {
+  // Keep codes we already know, so a refresh only fetches codes for new sets.
+  const knownCodes = new Map(previousGroups.flatMap(g => g.sets)
+    .filter(s => s.code !== undefined).map(s => [s.id, s.code]));
 
   const series = await fetchJSON(`${API}/series`);
   const details = await mapLimit(series, 6, s =>
@@ -324,6 +353,7 @@ async function loadSetList() {
         id: s.id,
         name: s.name,
         total: s.cardCount?.total ?? null,
+        code: knownCodes.get(s.id),   // undefined = not fetched yet
       })),
     }))
     .sort((a, b) => {
@@ -331,18 +361,85 @@ async function loadSetList() {
       if (ta !== tb) return ta ? 1 : -1;
       return a.release.localeCompare(b.release);
     });
-
-  // Set codes (e.g. PRE) are only on each set's own record, so fetch those too.
-  const allSets = groups.flatMap(g => g.sets);
-  await mapLimit(allSets, FETCH_CONCURRENCY, async s => {
-    const d = await fetchJSON(`${API}/sets/${encodeURIComponent(s.id)}`, 1).catch(() => null);
-    s.code = d?.abbreviation?.official || null;
-  });
-
-  // Drop older cached copies of the set list.
-  ['setlist', 'setlist-oldest-first'].forEach(k => localStorage.removeItem(CACHE_PREFIX + k));
-  writeStore('setlist-v3', { time: Date.now(), groups });
   return groups;
+}
+
+// Set codes are only on each set's own record. Fetch the missing ones with low
+// concurrency so they don't slow down loading the set the user picked, and save
+// progress as we go so a reload picks up where it left off.
+async function fillSetCodes(entry, onCodes) {
+  const missing = entry.groups.flatMap(g => g.sets).filter(s => s.code === undefined);
+  let sinceSave = 0;
+  const save = () => { sinceSave = 0; writeStore('setlist-v3', entry); };
+  await mapLimit(missing, 4, async s => {
+    try {
+      const d = await fetchJSON(`${API}/sets/${encodeURIComponent(s.id)}`, 1);
+      s.code = d?.abbreviation?.official || null;
+      onCodes(s);
+    } catch {
+      return; // leave undefined; retried on a later visit
+    }
+    if (++sinceSave >= 20) save();
+  });
+  entry.codesDone = entry.groups.every(g => g.sets.every(s => s.code !== undefined));
+  save();
+}
+
+// One shared request per card, so a set the user opens while it's being
+// downloaded in the background reuses the cards already fetched or in flight.
+const cardRequests = new Map();
+function fetchCard(id) {
+  let p = cardRequests.get(id);
+  if (!p) {
+    p = fetchJSON(`${API}/cards/${encodeURIComponent(id)}`);
+    cardRequests.set(id, p);
+    p.catch(() => cardRequests.delete(id)); // let a later attempt retry
+  }
+  return p;
+}
+
+// Downloads a set's metadata and every card's details, and caches it if all
+// cards came through. isCancelled() stops it early; beforeCard() can delay
+// each card request (used to pause background downloads).
+async function downloadSet(setId, { concurrency, onProgress, isCancelled = () => false, beforeCard }) {
+  const set = await fetchJSON(`${API}/sets/${encodeURIComponent(setId)}`);
+  const setMeta = {
+    id: set.id,
+    name: set.name,
+    serie: set.serie?.name || '',
+    releaseDate: set.releaseDate || '',
+    cardCount: set.cardCount || {},
+  };
+  const briefs = set.cards || [];
+  let done = 0;
+  let failures = 0;
+
+  const cards = await mapLimit(briefs, concurrency, async brief => {
+    if (beforeCard) await beforeCard();
+    if (isCancelled()) return null;
+    let raw;
+    try {
+      raw = await fetchCard(brief.id);
+    } catch {
+      failures++;
+      raw = brief; // fall back to name/number/image only
+    }
+    done++;
+    onProgress?.(done, briefs.length);
+    return normalizeCard(raw, setMeta);
+  });
+  if (isCancelled()) return null;
+
+  let saved = false;
+  if (failures === 0) {
+    saved = writeStore(`set:${setId}`, {
+      set: setMeta,
+      cards: cards.map(({ id, localId, name, category, types, suffix, rarity, image }) =>
+        ({ id, localId, name, category, types, suffix, rarity, image })),
+    }, { evict: !beforeCard }); // background downloads never evict other sets
+  }
+  briefs.forEach(b => cardRequests.delete(b.id));
+  return { setMeta, cards, failures, saved };
 }
 
 async function loadSet(setId) {
@@ -357,52 +454,64 @@ async function loadSet(setId) {
     return;
   }
 
+  const stale = () => token !== state.loadToken;
+  foreground.start();
   try {
     showStatus('Loading set…');
-    const set = await fetchJSON(`${API}/sets/${encodeURIComponent(setId)}`);
-    if (token !== state.loadToken) return;
-    const setMeta = {
-      id: set.id,
-      name: set.name,
-      serie: set.serie?.name || '',
-      releaseDate: set.releaseDate || '',
-      cardCount: set.cardCount || {},
-    };
-    const briefs = set.cards || [];
-    let done = 0;
-    let failures = 0;
-
-    const cards = await mapLimit(briefs, FETCH_CONCURRENCY, async brief => {
-      if (token !== state.loadToken) return null;
-      let raw;
-      try {
-        raw = await fetchJSON(`${API}/cards/${encodeURIComponent(brief.id)}`);
-      } catch {
-        failures++;
-        raw = brief; // fall back to name/number/image only
-      }
-      done++;
-      if (token === state.loadToken) {
-        showStatus(`Loading card details… ${done} / ${briefs.length}`, done / briefs.length);
-      }
-      return normalizeCard(raw, setMeta);
+    const result = await downloadSet(setId, {
+      concurrency: FETCH_CONCURRENCY,
+      isCancelled: stale,
+      onProgress: (done, total) => {
+        if (!stale()) showStatus(`Loading card details… ${done} / ${total}`, done / total);
+      },
     });
-    if (token !== state.loadToken) return;
-
-    if (failures === 0) {
-      writeStore(`set:${setId}`, {
-        set: setMeta,
-        cards: cards.map(({ id, localId, name, category, types, suffix, rarity, image }) =>
-          ({ id, localId, name, category, types, suffix, rarity, image })),
-      });
-    }
-    applySet(setMeta, cards);
-    if (failures) {
-      showStatus(`${failures} card(s) could not be loaded fully and are grouped under "Unknown". Reload the set to retry.`, null, true);
+    if (!result || stale()) return;
+    applySet(result.setMeta, result.cards);
+    if (result.failures) {
+      showStatus(`${result.failures} card(s) could not be loaded fully and are grouped under "Unknown". Reload the set to retry.`, null, true);
     }
   } catch (err) {
-    if (token !== state.loadToken) return;
+    if (stale()) return;
     showStatus(`Could not load this set (${err.message}).`, null, true, () => loadSet(setId));
+  } finally {
+    foreground.end();
+  }
+}
+
+/* ---------------------------- Background download ---------------------------- */
+
+// Series downloaded ahead of time, since they're what most people sort.
+const PREFETCH_SERIES = ['me', 'sv'];
+
+// Tracks set loads the user is waiting on; background downloads pause meanwhile.
+const foreground = {
+  active: 0,
+  waiters: [],
+  start() { this.active++; },
+  end() {
+    if (--this.active > 0) return;
+    this.waiters.splice(0).forEach(resolve => resolve());
+  },
+  idle() {
+    return this.active ? new Promise(resolve => this.waiters.push(resolve)) : Promise.resolve();
+  },
+};
+
+// Download every set in PREFETCH_SERIES that isn't cached yet, newest first,
+// one set at a time with low concurrency.
+async function prefetchSets(groups) {
+  if (navigator.connection?.saveData) return;
+  const sets = PREFETCH_SERIES
+    .flatMap(id => groups.find(g => g.id === id)?.sets.slice().reverse() ?? []);
+  for (const s of sets) {
+    if (readStore(`set:${s.id}`)) continue;
+    await foreground.idle();
+    try {
+      const result = await downloadSet(s.id, { concurrency: 4, beforeCard: () => foreground.idle() });
+      if (result && !result.saved && !result.failures) return; // storage is full: stop
+    } catch {
+      // Network trouble with this set: skip it, it'll be retried next visit.
+    }
   }
 }
 
@@ -856,6 +965,19 @@ function renderSetOptions() {
   setActiveItem(el.setSelect.querySelector('[aria-selected=true]'));
 }
 
+// A set code arrived in the background: add it to the list without re-rendering,
+// so an open menu keeps its scroll position and highlight.
+function showSetCode(s) {
+  if (!s.code) return;
+  if (s.id === state.setId) updateSetTrigger();
+  const item = el.setSelect.querySelector(`[data-id="${CSS.escape(s.id)}"]`);
+  if (!item || item.querySelector('.set-code')) return;
+  const code = document.createElement('span');
+  code.className = 'set-code';
+  code.textContent = `[${s.code}]`;
+  item.append(code);
+}
+
 // Keyboard highlight within the set list (Enter or Space picks it).
 function setActiveItem(item) {
   el.setSelect.querySelectorAll('.set-item.active').forEach(n => n.classList.remove('active'));
@@ -1170,10 +1292,13 @@ async function init() {
   document.querySelectorAll('input[name=mode]').forEach(r => { r.checked = r.value === state.mode; });
   render();
 
+  // The saved set doesn't depend on the set list, so start it straight away.
+  if (state.setId) loadSet(state.setId);
+  else showStatus('Loading set list…');
+
   try {
-    showStatus('Loading set list…');
-    setGroups = await loadSetList();
-    hideStatus();
+    setGroups = await loadSetList(showSetCode);
+    if (!state.setId) hideStatus();
     renderSeriesOptions();
     renderSetOptions();
     updateSetTrigger();
@@ -1182,9 +1307,7 @@ async function init() {
     return;
   }
 
-  if (state.setId) {
-    loadSet(state.setId);
-  }
+  prefetchSets(setGroups);
 }
 
 init();
